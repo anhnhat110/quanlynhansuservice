@@ -18,7 +18,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Cấu hình CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
+  origin: 'https://quanlynhansu-r1yyipmu5-anhnhats-projects-82981253.vercel.app', // Frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
   credentials: true // Cho phép gửi cookie
