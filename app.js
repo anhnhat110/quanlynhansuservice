@@ -17,12 +17,14 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Cấu hình CORS
-app.use(cors({
-  origin: 'http://localhost:5173', // Frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
-  credentials: true // Cho phép gửi cookie
-}));
+app.use(
+  cors({
+    origin: ['https://quanlynhansu-six.vercel.app', 'http://localhost:5173'], // Frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+    credentials: true, // Cho phép gửi cookie
+  })
+);
 
 // Xử lý yêu cầu OPTIONS
 app.options('*', cors());
@@ -38,8 +40,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 // 2. ROUTES
 app.use('/api/v1/taikhoans', taiKhoanRouter);
 app.use('/api/v1/users', userRouter);
@@ -47,7 +47,6 @@ app.use('/api/v1/chuyengias', chuyenGiaRoutes);
 app.use('/api/v1/sukiens', suKienRoutes);
 
 // Xử lý lỗi 404
-
 
 // 3. START SERVER
 module.exports = app;
