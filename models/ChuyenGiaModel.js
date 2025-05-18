@@ -27,7 +27,13 @@ const chuyenGiaSchema = new mongoose.Schema({
     },
     hoChieu: {
         type: String,
+        default: '',
         required: [true, 'Hộ chiếu là bắt buộc'],
+        unique: true
+    },
+    anhHoChieu: {
+        type: String,
+        default: '',
         unique: true
     },
     truongDonVi: {

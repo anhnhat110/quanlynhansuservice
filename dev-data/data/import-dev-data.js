@@ -1,9 +1,10 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const TaiKhoan = require('../../models/TaiKhoanModel');
+const SinhVien = require('../../models/SinhVienModel');
 const ChuyenGia = require('../../models/ChuyenGiaModel');
 const SuKien = require('../../models/SuKienModel');
+const DanhMucDoan = require('../../models/DanhMucDoanModel');
 
 dotenv.config({ path: './config.env' });
 
@@ -12,15 +13,15 @@ const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSW
 mongoose.connect(DB).then(() => console.log('DB connection successful!'));
 
 //READ JSON FILE
-const taikhoan = JSON.parse(fs.readFileSync(`${__dirname}/taikhoan.json`));
-const nhanvien = JSON.parse(fs.readFileSync(`${__dirname}/nhanvien.json`));
+const sinhvien = JSON.parse(fs.readFileSync(`${__dirname}/sinhvien.json`));
 const chuyengia = JSON.parse(fs.readFileSync(`${__dirname}/chuyengia.json`));
 const sukien = JSON.parse(fs.readFileSync(`${__dirname}/sukien.json`));
-
+const danhmucdoan = JSON.parse(fs.readFileSync(`${__dirname}/danhmucdoan.json`));
 //IMPORT DATA INTO DB
 const importData = async () => {
     try {
-        await TaiKhoan.create(taikhoan);
+        await DanhMucDoan.create(danhmucdoan);
+        await SinhVien.create(sinhvien);
         await ChuyenGia.create(chuyengia);
         await SuKien.create(sukien);
         console.log('Data successfully loaded!');
@@ -33,7 +34,8 @@ const importData = async () => {
 //DELETE ALL DATA FROM DB
 const deleteData = async () => {
     try {
-        await TaiKhoan.deleteMany();
+        await DanhMucDoan.deleteMany();
+        await SinhVien.deleteMany();
         await ChuyenGia.deleteMany();
         await SuKien.deleteMany();
         console.log('Data successfully deleted!');

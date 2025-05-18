@@ -66,6 +66,64 @@ class APIFeatures {
         }
         return this;
     }
+    searchforSinhVien() {
+        if (this.queryString.search) {
+            const searchTerm = this.queryString.search;
+            const searchTermNoAccent = removeVietnameseAccents(searchTerm).toLowerCase();
+
+            const fields = [ 'hoVaTen', 'maSV', 'lop'];
+
+            // Tạo điều kiện tìm kiếm cho cả có dấu và không dấu
+            const searchConditions = fields.flatMap(field => ([
+                {
+                    [field]: {
+                        $regex: searchTerm,
+                        $options: 'i'
+                    }
+                },
+                {
+                    [field]: {
+                        $regex: searchTermNoAccent,
+                        $options: 'i'
+                    }
+                }
+            ]));
+
+            this.query = this.query.find({
+                $or: searchConditions
+            });
+        }
+        return this;
+    }
+    searchforDanhMucDoan() {
+        if (this.queryString.search) {
+            const searchTerm = this.queryString.search;
+            const searchTermNoAccent = removeVietnameseAccents(searchTerm).toLowerCase();
+
+            const fields = [ 'hoVaTen', 'maSV', 'lop'];
+
+            // Tạo điều kiện tìm kiếm cho cả có dấu và không dấu
+            const searchConditions = fields.flatMap(field => ([
+                {
+                    [field]: {
+                        $regex: searchTerm,
+                        $options: 'i'
+                    }
+                },
+                {
+                    [field]: {
+                        $regex: searchTermNoAccent,
+                        $options: 'i'
+                    }
+                }
+            ]));
+
+            this.query = this.query.find({
+                $or: searchConditions
+            });
+        }
+        return this;
+    }
     // Các phương thức khác như filter, sort, limitFields, paginate... không thay đổi
     // 2) FILTERING
     filter() {

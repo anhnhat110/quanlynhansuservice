@@ -125,7 +125,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // 3. Tạo reset URL cho frontend React
-  const resetURL = `http://localhost:5173/resetPassword/${resetToken}`;
+  const resetURL = `${process.env.FRONT_END_URL}/resetPassword/${resetToken}`;
 
   // 4. Gửi email với nội dung HTML đẹp
   try {
