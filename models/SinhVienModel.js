@@ -30,10 +30,12 @@
     chuyenNganh: {
       type: String,
       trim: true,
+      required: true,
     },
     lop: {
       type: String,
       trim: true,
+      required: true,
     },
     truongDoiTac: {
       type: String,
