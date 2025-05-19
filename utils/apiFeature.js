@@ -12,7 +12,7 @@ class APIFeatures {
             const searchTerm = this.queryString.search;
             const searchTermNoAccent = removeVietnameseAccents(searchTerm).toLowerCase();
 
-            const fields = [ 'suKien', 'mucDich','chuyenGia'];
+            const fields = [ 'suKien','chuyenGia'];
 
             // Tạo điều kiện tìm kiếm cho cả có dấu và không dấu
             const searchConditions = fields.flatMap(field => ([
