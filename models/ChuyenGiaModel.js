@@ -4,7 +4,7 @@ const chuyenGiaSchema = new mongoose.Schema({
     maCG: {
         type: String,
         required: [true, 'Mã chuyên gia là bắt buộc'],
-        unique: true
+        unique: true,
     },
     email: {
         type: String,
@@ -34,7 +34,6 @@ const chuyenGiaSchema = new mongoose.Schema({
     anhHoChieu: {
         type: String,
         default: '',
-        unique: true
     },
     truongDonVi: {
         type: String,
@@ -46,7 +45,7 @@ const chuyenGiaSchema = new mongoose.Schema({
     },
     chucVu: {
         type: String,
-        required: [true, 'Chức vụ là bắt buộc']
+        default: ''
     },
     chuyenNganh: {
         type: String,

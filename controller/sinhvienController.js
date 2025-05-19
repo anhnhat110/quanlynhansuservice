@@ -22,7 +22,7 @@ exports.getAllSinhVien = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err,
+      message: err.message || 'Không thể lấy danh sách sinh viên',
     });
   }
 };
@@ -30,6 +30,12 @@ exports.getAllSinhVien = async (req, res) => {
 exports.getSinhVien = async (req, res) => {
   try {
     const sinhVien = await SinhVien.findById(req.params.id);
+    if (!sinhVien) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Không tìm thấy sinh viên',
+      });
+    }
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -40,7 +46,7 @@ exports.getSinhVien = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err,
+      message: err.message || 'Không tìm thấy sinh viên',
     });
   }
 };
@@ -52,14 +58,20 @@ exports.createSinhVien = async (req, res) => {
     res.status(201).json({
       status: 'success',
       requestedAt: req.requestTime,
-      data :{
+      data: {
         sinhVien: newSinhVien,
       },
     });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Mã sinh viên đã tồn tại',
+      });
+    }
     res.status(400).json({
       status: 'fail',
-      message: err,
+      message: err.message || 'Dữ liệu không hợp lệ',
     });
   }
 };
@@ -70,6 +82,12 @@ exports.updateSinhVien = async (req, res) => {
       new: true,
       runValidators: true,
     });
+    if (!sinhVien) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Không tìm thấy sinh viên',
+      });
+    }
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -78,16 +96,28 @@ exports.updateSinhVien = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
+    if (err.code === 11000) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Mã sinh viên đã tồn tại',
+      });
+    }
+    res.status(400).json({
       status: 'fail',
-      message: err,
+      message: err.message || 'Mã sinh viên đã tồn tại',
     });
   }
 };
 
 exports.deleteSinhVien = async (req, res) => {
   try {
-    await SinhVien.findByIdAndDelete(req.params.id);
+    const sinhVien = await SinhVien.findByIdAndDelete(req.params.id);
+    if (!sinhVien) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Không tìm thấy sinh viên',
+      });
+    }
     res.status(204).json({
       status: 'success',
       data: null,
@@ -95,12 +125,11 @@ exports.deleteSinhVien = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: err,
+      message: err.message || 'Không thể xóa sinh viên',
     });
   }
 };
 
-// Get top 5 partner schools
 exports.getTopTruongDoiTac = async (req, res) => {
   try {
     const topTruongDoiTac = await SinhVien.aggregate([
@@ -136,7 +165,7 @@ exports.getTopTruongDoiTac = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       status: 'fail',
-      message: err.message,
+      message: err.message || 'Không thể lấy danh sách trường đối tác',
     });
   }
 };

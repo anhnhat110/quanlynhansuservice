@@ -1,3 +1,4 @@
+const catchAsync = require('../utils/catchAsync');
 const APIFeatures = require('../utils/apiFeature');
 const SuKien = require('../models/SuKienModel');
 
@@ -21,7 +22,7 @@ exports.getAllSuKiens = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err.message,
+            message: err.message || 'Không thể lấy danh sách sự kiện',
         });
     }
 };
@@ -45,7 +46,7 @@ exports.getSuKien = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err.message,
+            message: err.message || 'Không tìm thấy sự kiện',
         });
     }
 };
@@ -53,7 +54,6 @@ exports.getSuKien = async (req, res) => {
 exports.createSuKien = async (req, res) => {
     try {
         const newSuKien = await SuKien.create(req.body);
-
         res.status(201).json({
             status: 'success',
             requestedAt: req.requestTime,
@@ -62,9 +62,21 @@ exports.createSuKien = async (req, res) => {
             },
         });
     } catch (err) {
+        if (err.code === 11000) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Mã sự kiện đã tồn tại',
+            });
+        }
+        if (err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+            });
+        }
         res.status(400).json({
             status: 'fail',
-            message: err.message,
+            message: err.message || 'Dữ liệu không hợp lệ',
         });
     }
 };
@@ -89,9 +101,21 @@ exports.updateSuKien = async (req, res) => {
             },
         });
     } catch (err) {
+        if (err.code === 11000) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Mã sự kiện đã tồn tại',
+            });
+        }
+        if (err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+            });
+        }
         res.status(400).json({
             status: 'fail',
-            message: err.message,
+            message: err.message || 'Dữ liệu không hợp lệ',
         });
     }
 };
@@ -112,7 +136,7 @@ exports.deleteSuKien = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err.message,
+            message: err.message || 'Không thể xóa sự kiện',
         });
     }
 };
@@ -122,21 +146,21 @@ exports.getTopChuyenGias = async (req, res) => {
         const topChuyenGias = await SuKien.aggregate([
             {
                 $group: {
-                    _id: '$chuyenGia', // Group by chuyenGia (specialist name)
-                    eventCount: { $sum: 1 } // Count number of events per specialist
+                    _id: '$chuyenGia',
+                    eventCount: { $sum: 1 }
                 }
             },
             {
-                $sort: { eventCount: -1 } // Sort by event count in descending order
+                $sort: { eventCount: -1 }
             },
             {
-                $limit: 5 // Limit to top 5
+                $limit: 5
             },
             {
                 $project: {
-                    chuyenGia: '$_id', // Rename _id to chuyenGia
+                    chuyenGia: '$_id',
                     eventCount: 1,
-                    _id: 0 // Exclude _id field
+                    _id: 0
                 }
             }
         ]);
@@ -152,7 +176,7 @@ exports.getTopChuyenGias = async (req, res) => {
     } catch (err) {
         res.status(500).json({
             status: 'fail',
-            message: err.message
+            message: err.message || 'Không thể lấy danh sách chuyên gia hàng đầu',
         });
     }
 };

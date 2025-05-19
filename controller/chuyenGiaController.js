@@ -22,7 +22,7 @@ exports.getAllChuyenGias = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status: 'fail',
-            message: err,
+            message: err.message || 'Không thể lấy danh sách chuyên gia',
         });
     }
 };
@@ -30,6 +30,12 @@ exports.getAllChuyenGias = async (req, res) => {
 exports.getChuyenGia = async (req, res) => {
     try {
         const chuyenGia = await ChuyenGia.findById(req.params.id);
+        if (!chuyenGia) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Không tìm thấy chuyên gia',
+            });
+        }
         res.status(200).json({
             status: 'success',
             requestedAt: req.requestTime,
@@ -40,7 +46,7 @@ exports.getChuyenGia = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status: 'fail',
-            message: err,
+            message: err.message || 'Không tìm thấy chuyên gia',
         });
     }
 };
@@ -57,9 +63,17 @@ exports.createChuyenGia = async (req, res) => {
             },
         });
     } catch (err) {
+        if (err.code === 11000) {
+            const field = Object.keys(err.keyValue)[0];
+            const message = field === 'email' ? 'Email đã tồn tại' : 'Hộ chiếu đã tồn tại';
+            return res.status(400).json({
+                status: 'fail',
+                message,
+            });
+        }
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message || 'Dữ liệu không hợp lệ',
         });
     }
 };
@@ -70,6 +84,12 @@ exports.updateChuyenGia = async (req, res) => {
             new: true,
             runValidators: true,
         });
+        if (!chuyenGia) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Không tìm thấy chuyên gia',
+            });
+        }
         res.status(200).json({
             status: 'success',
             requestedAt: req.requestTime,
@@ -78,16 +98,30 @@ exports.updateChuyenGia = async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(404).json({
+        if (err.code === 11000) {
+            const field = Object.keys(err.keyValue)[0];
+            const message = field === 'email' ? 'Email đã tồn tại' : 'Hộ chiếu đã tồn tại';
+            return res.status(400).json({
+                status: 'fail',
+                message,
+            });
+        }
+        res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message || 'Dữ liệu không hợp lệ',
         });
     }
 };
 
 exports.deleteChuyenGia = async (req, res) => {
     try {
-        await ChuyenGia.findByIdAndDelete(req.params.id);
+        const chuyenGia = await ChuyenGia.findByIdAndDelete(req.params.id);
+        if (!chuyenGia) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'Không tìm thấy chuyên gia',
+            });
+        }
         res.status(204).json({
             status: 'success',
             data: null,
@@ -95,7 +129,7 @@ exports.deleteChuyenGia = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status: 'fail',
-            message: err,
+            message: err.message || 'Không thể xóa chuyên gia',
         });
     }
-}; 
+};

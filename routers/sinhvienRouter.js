@@ -14,7 +14,7 @@ router
 router
   .route('/:id')
   .get(sinhVienController.getSinhVien)
-  .put(sinhVienController.updateSinhVien)
+  .patch(sinhVienController.updateSinhVien)
   .delete(sinhVienController.deleteSinhVien);
 
 module.exports = router;

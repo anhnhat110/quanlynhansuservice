@@ -20,13 +20,20 @@ const suKienSchema = new mongoose.Schema({
         required: [true, 'Mục đích là bắt buộc']
     },
     thoiGianBatDau: {
-        type: Date,
-        required: [true, 'Ngày bắt đầu là bắt buộc']
-    },
-    thoiGianKetThuc: {
-        type: Date,
-        required: [true, 'Ngày kết thúc là bắt buộc']
-    },
+    type: Date,
+    required: [true, 'Ngày bắt đầu là bắt buộc']
+},
+thoiGianKetThuc: {
+    type: Date,
+    required: [true, 'Ngày kết thúc là bắt buộc'],
+    validate: {
+        validator: function (value) {
+            return value >= this.thoiGianBatDau;
+        },
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+    }
+},
+
     diaDiem: {
         type: String,
         required: [true, 'Địa điểm là bắt buộc']

@@ -1,3 +1,4 @@
+
 const APIFeatures = require('../utils/apiFeature');
 const DanhMucDoan = require('../models/DanhMucDoanModel');
 
@@ -20,9 +21,9 @@ exports.getAllDanhMucDoan = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
+    res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: err.message || 'Không thể lấy danh sách đoàn',
     });
   }
 };
@@ -44,9 +45,9 @@ exports.getDanhMucDoan = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
+    res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: err.message || 'Không tìm thấy đoàn',
     });
   }
 };
@@ -54,7 +55,6 @@ exports.getDanhMucDoan = async (req, res) => {
 exports.createDanhMucDoan = async (req, res) => {
   try {
     const newDanhMucDoan = await DanhMucDoan.create(req.body);
-
     res.status(201).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -63,9 +63,27 @@ exports.createDanhMucDoan = async (req, res) => {
       },
     });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Hộ chiếu đã tồn tại, vui lòng nhập khác'
+      });
+    }
+    if (err.message.includes('Hộ chiếu phải có đúng 8 ký tự')) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Hộ chiếu phải có đúng 8 ký tự chữ hoặc số'
+      });
+    }
+    if (err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+      });
+    }
     res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: err.message || 'Dữ liệu không hợp lệ'
     });
   }
 };
@@ -90,9 +108,27 @@ exports.updateDanhMucDoan = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
+    if (err.code === 11000) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Hộ chiếu đã tồn tại, vui lòng nhập khác'
+      });
+    }
+    if (err.message.includes('Hộ chiếu phải có đúng 8 ký tự')) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Hộ chiếu phải có đúng 8 ký tự chữ hoặc số'
+      });
+    }
+    if (err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+      });
+    }
+    res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: err.message || 'Dữ liệu không hợp lệ'
     });
   }
 };
@@ -111,9 +147,9 @@ exports.deleteDanhMucDoan = async (req, res) => {
       data: null,
     });
   } catch (err) {
-    res.status(404).json({
+    res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: err.message || 'Không thể xóa đoàn',
     });
   }
 };
