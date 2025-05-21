@@ -90,16 +90,21 @@ exports.createDanhMucDoan = async (req, res) => {
 
 exports.updateDanhMucDoan = async (req, res) => {
   try {
-    const danhMucDoan = await DanhMucDoan.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const danhMucDoan = await DanhMucDoan.findById(
+      req.params.id
+    );
     if (!danhMucDoan) {
       return res.status(404).json({
         status: 'fail',
         message: 'Không tìm thấy đoàn',
       });
     }
+    Object.keys(req.body).forEach((key) => {
+          danhMucDoan[key] = req.body[key];
+        });
+    
+        // Lưu lại để kích hoạt validate đầy đủ
+        await danhMucDoan.save();
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -132,7 +137,6 @@ exports.updateDanhMucDoan = async (req, res) => {
     });
   }
 };
-
 exports.deleteDanhMucDoan = async (req, res) => {
   try {
     const danhMucDoan = await DanhMucDoan.findByIdAndDelete(req.params.id);

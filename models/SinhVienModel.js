@@ -68,4 +68,6 @@ thoiGianKetThuc: {
     },
   });
 
-  module.exports = mongoose.model('SinhVien', sinhVienSchema);
+const SinhVien = mongoose.model('SinhVien', sinhVienSchema);
+
+module.exports = SinhVien;

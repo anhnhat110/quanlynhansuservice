@@ -16,17 +16,6 @@ const danhMucDoanSchema = new mongoose.Schema({
     required: [true, 'Hộ chiếu là bắt buộc'],
     unique: true,
     trim: true,
-    match: [/^[A-Za-z0-9]{8}$/, 'Hộ chiếu phải có đúng 8 ký tự chữ hoặc số'],
-    validate: {
-      validator: async function (value) {
-        if (this.isModified('hoChieu')) {
-          const existing = await this.constructor.findOne({ hoChieu: value, _id: { $ne: this._id } });
-          return !existing;
-        }
-        return true;
-      },
-      message: 'Hộ chiếu đã tồn tại'
-    }
   },
   quocTich: {
     type: String,
@@ -35,7 +24,7 @@ const danhMucDoanSchema = new mongoose.Schema({
   },
   DOB: {
     type: Date,
-    required: [true, 'Ngày sinh là bắt buộc'],
+    default: ""
   },
   thoiGianBatDau: {
     type: Date,

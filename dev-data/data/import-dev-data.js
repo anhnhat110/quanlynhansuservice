@@ -20,10 +20,10 @@ const danhmucdoan = JSON.parse(fs.readFileSync(`${__dirname}/danhmucdoan.json`))
 //IMPORT DATA INTO DB
 const importData = async () => {
     try {
-        await DanhMucDoan.create(danhmucdoan);
+        // await DanhMucDoan.create(danhmucdoan);
         await SinhVien.create(sinhvien);
-        await ChuyenGia.create(chuyengia);
-        await SuKien.create(sukien);
+        // await ChuyenGia.create(chuyengia);
+        // await SuKien.create(sukien);
         console.log('Data successfully loaded!');
     } catch (err) {
         console.log(err);
@@ -34,10 +34,10 @@ const importData = async () => {
 //DELETE ALL DATA FROM DB
 const deleteData = async () => {
     try {
-        await DanhMucDoan.deleteMany();
+        // await DanhMucDoan.deleteMany();
         await SinhVien.deleteMany();
-        await ChuyenGia.deleteMany();
-        await SuKien.deleteMany();
+        // await ChuyenGia.deleteMany();
+        // await SuKien.deleteMany();
         console.log('Data successfully deleted!');
     } catch (err) {
         console.log(err);

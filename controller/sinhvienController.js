@@ -69,6 +69,14 @@ exports.createSinhVien = async (req, res) => {
         message: 'Mã sinh viên đã tồn tại',
       });
     }
+    if (
+      err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')
+    ) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
+      });
+    }
     res.status(400).json({
       status: 'fail',
       message: err.message || 'Dữ liệu không hợp lệ',
@@ -78,16 +86,21 @@ exports.createSinhVien = async (req, res) => {
 
 exports.updateSinhVien = async (req, res) => {
   try {
-    const sinhVien = await SinhVien.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const sinhVien = await SinhVien.findById(req.params.id);
+
     if (!sinhVien) {
       return res.status(404).json({
         status: 'fail',
         message: 'Không tìm thấy sinh viên',
       });
     }
+    // Cập nhật thủ công các trường từ req.body
+    Object.keys(req.body).forEach((key) => {
+      sinhVien[key] = req.body[key];
+    });
+
+    // Lưu lại để kích hoạt validate đầy đủ
+    await sinhVien.save();
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -102,9 +115,17 @@ exports.updateSinhVien = async (req, res) => {
         message: 'Mã sinh viên đã tồn tại',
       });
     }
+    if (
+      err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')
+    ) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
+      });
+    }
     res.status(400).json({
       status: 'fail',
-      message: err.message || 'Mã sinh viên đã tồn tại',
+      message: err.message || 'Dữ liệu không hợp lệ',
     });
   }
 };

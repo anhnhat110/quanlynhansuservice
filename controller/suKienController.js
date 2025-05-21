@@ -83,16 +83,22 @@ exports.createSuKien = async (req, res) => {
 
 exports.updateSuKien = async (req, res) => {
     try {
-        const suKien = await SuKien.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
+        const suKien = await SuKien.findById(req.params.id);
         if (!suKien) {
             return res.status(404).json({
                 status: 'fail',
                 message: 'Sự kiện không tìm thấy',
             });
         }
+
+        // Cập nhật thủ công các trường từ req.body
+        Object.keys(req.body).forEach(key => {
+            suKien[key] = req.body[key];
+        });
+
+        // Lưu lại để kích hoạt validate đầy đủ
+        await suKien.save();
+
         res.status(200).json({
             status: 'success',
             requestedAt: req.requestTime,
@@ -100,6 +106,7 @@ exports.updateSuKien = async (req, res) => {
                 suKien,
             },
         });
+
     } catch (err) {
         if (err.code === 11000) {
             return res.status(400).json({
@@ -119,6 +126,7 @@ exports.updateSuKien = async (req, res) => {
         });
     }
 };
+
 
 exports.deleteSuKien = async (req, res) => {
     try {
