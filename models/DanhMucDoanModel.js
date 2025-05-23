@@ -24,11 +24,11 @@ const danhMucDoanSchema = new mongoose.Schema({
   },
   DOB: {
     type: Date,
-    default: ""
+    default: '',
   },
   thoiGianBatDau: {
     type: Date,
-    required: [true, 'Ngày bắt đầu là bắt buộc']
+    required: [true, 'Ngày bắt đầu là bắt buộc'],
   },
   thoiGianKetThuc: {
     type: Date,
@@ -37,8 +37,8 @@ const danhMucDoanSchema = new mongoose.Schema({
       validator: function (value) {
         return value >= this.thoiGianBatDau;
       },
-      message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
-    }
+      message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
+    },
   },
   noiDung: {
     type: String,
@@ -55,14 +55,14 @@ const danhMucDoanSchema = new mongoose.Schema({
   },
 });
 
-// Pre-update hook to validate hoChieu during updates
-danhMucDoanSchema.pre(['updateOne', 'findOneAndUpdate'], async function(next) {
+// Pre-update hook to validate only uniqueness of hoChieu during updates
+danhMucDoanSchema.pre(['updateOne', 'findOneAndUpdate'], async function (next) {
   const update = this.getUpdate();
   if (update.hoChieu) {
-    if (!/^[A-Za-z0-9]{8}$/.test(update.hoChieu)) {
-      return next(new Error('Hộ chiếu phải có đúng 8 ký tự chữ hoặc số'));
-    }
-    const existing = await this.model.findOne({ hoChieu: update.hoChieu, _id: { $ne: this.getQuery()._id } });
+    const existing = await this.model.findOne({
+      hoChieu: update.hoChieu,
+      _id: { $ne: this.getQuery()._id },
+    });
     if (existing) {
       return next(new Error('Hộ chiếu đã tồn tại'));
     }

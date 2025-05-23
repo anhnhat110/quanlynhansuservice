@@ -1,4 +1,3 @@
-
 const APIFeatures = require('../utils/apiFeature');
 const DanhMucDoan = require('../models/DanhMucDoanModel');
 
@@ -66,33 +65,25 @@ exports.createDanhMucDoan = async (req, res) => {
     if (err.code === 11000) {
       return res.status(400).json({
         status: 'fail',
-        message: 'Hộ chiếu đã tồn tại, vui lòng nhập khác'
-      });
-    }
-    if (err.message.includes('Hộ chiếu phải có đúng 8 ký tự')) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Hộ chiếu phải có đúng 8 ký tự chữ hoặc số'
+        message: 'Hộ chiếu đã tồn tại, vui lòng nhập khác',
       });
     }
     if (err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')) {
       return res.status(400).json({
         status: 'fail',
-        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
       });
     }
     res.status(400).json({
       status: 'fail',
-      message: err.message || 'Dữ liệu không hợp lệ'
+      message: err.message || 'Dữ liệu không hợp lệ',
     });
   }
 };
 
 exports.updateDanhMucDoan = async (req, res) => {
   try {
-    const danhMucDoan = await DanhMucDoan.findById(
-      req.params.id
-    );
+    const danhMucDoan = await DanhMucDoan.findById(req.params.id);
     if (!danhMucDoan) {
       return res.status(404).json({
         status: 'fail',
@@ -100,11 +91,11 @@ exports.updateDanhMucDoan = async (req, res) => {
       });
     }
     Object.keys(req.body).forEach((key) => {
-          danhMucDoan[key] = req.body[key];
-        });
-    
-        // Lưu lại để kích hoạt validate đầy đủ
-        await danhMucDoan.save();
+      danhMucDoan[key] = req.body[key];
+    });
+
+    // Lưu lại để kích hoạt validate đầy đủ
+    await danhMucDoan.save();
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
@@ -116,27 +107,22 @@ exports.updateDanhMucDoan = async (req, res) => {
     if (err.code === 11000) {
       return res.status(400).json({
         status: 'fail',
-        message: 'Hộ chiếu đã tồn tại, vui lòng nhập khác'
-      });
-    }
-    if (err.message.includes('Hộ chiếu phải có đúng 8 ký tự')) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Hộ chiếu phải có đúng 8 ký tự chữ hoặc số'
+        message: 'Hộ chiếu đã tồn tại, vui lòng nhập khác',
       });
     }
     if (err.message.includes('Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu')) {
       return res.status(400).json({
         status: 'fail',
-        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu'
+        message: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu',
       });
     }
     res.status(400).json({
       status: 'fail',
-      message: err.message || 'Dữ liệu không hợp lệ'
+      message: err.message || 'Dữ liệu không hợp lệ',
     });
   }
 };
+
 exports.deleteDanhMucDoan = async (req, res) => {
   try {
     const danhMucDoan = await DanhMucDoan.findByIdAndDelete(req.params.id);
