@@ -128,7 +128,12 @@ class APIFeatures {
     // 2) FILTERING
     filter() {
         const { limit, page, sort, search, fields , ...queryObj } = this.queryString;
-
+         if (this.queryString.year) {
+        const year = this.queryString.year;
+        const start = new Date(`${year}-01-01T00:00:00.000Z`);
+        const end = new Date(`${parseInt(year) + 1}-01-01T00:00:00.000Z`);
+        queryObj.thoiGianBatDau = { gte: start.toISOString(), lt: end.toISOString() };
+    }
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
